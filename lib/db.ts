@@ -1,24 +1,15 @@
-import sqlite from "better-sqlite3";
+import { PrismaClient } from "@prisma/client";
 
-export const db = sqlite("main.db");
+const prismaClientSingleton = () => {
+  return new PrismaClient();
+};
 
-db.exec(`CREATE TABLE IF NOT EXISTS user (
-    id TEXT NOT NULL PRIMARY KEY,
-    username TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    role TEXT NOT NULL DEFAULT 'user'
-)`);
+declare const globalThis: {
+  prismaGlobal: ReturnType<typeof prismaClientSingleton>;
+} & typeof global;
 
-db.exec(`CREATE TABLE IF NOT EXISTS session (
-    id TEXT NOT NULL PRIMARY KEY,
-    expires_at INTEGER NOT NULL,
-    user_id TEXT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user(id)
-)`);
+const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
 
-export interface DatabaseUser {
-  id: string;
-  username: string;
-  password_hash: string;
-  role: string;
-}
+export default prisma;
+
+if (process.env.NODE_ENV !== "production") globalThis.prismaGlobal = prisma;

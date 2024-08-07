@@ -1,19 +1,12 @@
 import { Lucia } from "lucia";
-import { BetterSqlite3Adapter } from "@lucia-auth/adapter-sqlite";
-import { db } from "./db";
 import { cookies } from "next/headers";
 import { cache } from "react";
-
 import type { Session, User } from "lucia";
-import type { DatabaseUser } from "./db";
+import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
+import prisma from "./db";
+import { User as PrismaUser } from "@prisma/client";
 
-// import { webcrypto } from "crypto";
-// globalThis.crypto = webcrypto as Crypto;
-
-const adapter = new BetterSqlite3Adapter(db, {
-  user: "user",
-  session: "session",
-});
+const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
@@ -68,6 +61,6 @@ export const validateRequest = cache(
 declare module "lucia" {
   interface Register {
     Lucia: typeof lucia;
-    DatabaseUserAttributes: Omit<DatabaseUser, "id">;
+    DatabaseUserAttributes: Omit<PrismaUser, "id">;
   }
 }
