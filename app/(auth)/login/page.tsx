@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { Form } from "@/lib/form";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -34,9 +32,6 @@ export default function LoginPage() {
             <Button type="submit">Login</Button>
           </div>
         </Form>
-        <div>
-          <Link href="/register">Create an account</Link>
-        </div>
       </div>
       <div className="hidden md:block h-full bg-primary flex-1"></div>
     </main>

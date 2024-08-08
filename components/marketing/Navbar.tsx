@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { BookmarkIcon } from "lucide-react";
 import Link from "next/link";
 import { SideBar } from "./Sidebar";
-import { links } from "@/lib/globals";
+import { marketingLinks } from "@/lib/globals";
 
 export default function Navbar() {
   return (
@@ -14,7 +14,7 @@ export default function Navbar() {
           <h1>IOMS</h1>
         </div>
         <div className="gap-4 hidden md:flex">
-          {links.map((link, i) => (
+          {marketingLinks.map((link, i) => (
             <Link
               key={i}
               href={`#${link.tag}`}

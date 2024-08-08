@@ -101,6 +101,7 @@ export async function register(
         username: username,
         password: passwordHash,
         role: "ASSISTANT",
+        assignedOffice: "GUIDANCE",
       },
     });
 

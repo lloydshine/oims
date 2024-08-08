@@ -18,12 +18,45 @@ enum UserRole {
   ASSISTANT
 }
 
+enum Status {
+  Approved
+  Pending
+  Declined
+}
+
+enum Office {
+  OSAS
+  GUIDANCE
+}
+
+model Department {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  shortName String    @unique
+  Borrow    Borrow[]
+  Program   Program[]
+}
+
+model Program {
+  id           String     @id @default(uuid())
+  name         String     @unique
+  shortName    String     @unique
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+}
+
 model User {
-  id       String    @id @default(uuid())
-  username String    @unique
-  password String
-  role     UserRole
-  sessions Session[]
+  id             String    @id @default(uuid())
+  username       String    @unique
+  password       String
+  role           UserRole
+  assignedOffice Office
+  firstName      String?
+  middleName     String?
+  lastName       String?
+  contactNumber  String?
+  email          String?
+  sessions       Session[]
 }
 
 model Session {
@@ -32,4 +65,37 @@ model Session {
   expiresAt DateTime
 
   user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model Equipment {
+  id              String            @id @default(uuid())
+  name            String
+  description     String?
+  quantity        Int
+  isAvailable     Boolean?          @default(false)
+  imageUrl        String?
+  BorrowEquipment BorrowEquipment[]
+}
+
+model Borrow {
+  id              String            @id @default(uuid())
+  borrower        String
+  department      Department        @relation(fields: [departmentId], references: [id])
+  event           String
+  dateRequested   DateTime          @default(now())
+  dateReturned    DateTime?
+  status          Status            @default(Pending)
+  BorrowEquipment BorrowEquipment[]
+  departmentId    String
+}
+
+model BorrowEquipment {
+  id          String    @id @default(uuid())
+  borrowId    String
+  equipmentId String
+  quantity    Int // Number of equipment items borrowed
+  borrow      Borrow    @relation(fields: [borrowId], references: [id])
+  equipment   Equipment @relation(fields: [equipmentId], references: [id])
+
+  @@unique([borrowId, equipmentId]) // Ensure a specific equipment is not duplicated in the same borrow
 }

@@ -8,7 +8,7 @@ import {
 import { Button } from "../ui/button";
 import { BookmarkIcon, MenuIcon } from "lucide-react";
 import Link from "next/link";
-import { links } from "@/lib/globals";
+import { marketingLinks } from "@/lib/globals";
 
 export function SideBar() {
   return (
@@ -27,7 +27,7 @@ export function SideBar() {
           <SheetDescription>Strive to Excelence</SheetDescription>
         </SheetHeader>
         <div className="flex flex-col gap-4 py-10">
-          {links.map((link, i) => (
+          {marketingLinks.map((link, i) => (
             <SheetTrigger asChild key={i}>
               <Link
                 href={`#${link.tag}`}

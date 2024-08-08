@@ -8,7 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import LogoutButton from "./LogoutButton";
+import { LogoutButton } from "./LogoutButton";
 
 export async function UserButton() {
   const { user } = await validateRequest();
