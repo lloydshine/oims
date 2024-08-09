@@ -8,7 +8,7 @@ import { NavLink } from "./NavLink";
 export async function Sidebar() {
   const { user } = await validateRequest();
   return (
-    <div className="flex flex-col w-[300px] border-r-2">
+    <div className="flex flex-col w-[300px] border-r-2 max-h-screen overflow-y-scroll">
       <div className="flex items-center gap-4 py-10 px-5">
         <BookmarkIcon />
         <h1 className="text-2xl font-bold">IOMS</h1>
