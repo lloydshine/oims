@@ -1,6 +1,6 @@
 import { AddUserForm } from "@/components/forms/AddUserForm";
 
-export default function AddPage() {
+export default function AddUserPage() {
   return (
     <section>
       <AddUserForm />

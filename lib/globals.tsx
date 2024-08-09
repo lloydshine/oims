@@ -14,6 +14,7 @@ export const appLinks = [
   { tag: "Events", href: "/events", icon: <CalendarCheck /> },
   { tag: "Equipments", href: "/equipments", icon: <BaggageClaimIcon /> },
   { tag: "Career", href: "/career", icon: <HardHatIcon /> },
+  { tag: "Certificates", href: "/certificates", icon: <BookIcon /> },
 ];
 
 export const adminLinks = [

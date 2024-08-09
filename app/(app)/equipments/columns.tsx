@@ -27,4 +27,8 @@ export const columns: ColumnDef<Equipment>[] = [
     accessorKey: "quantity",
     header: "Quantity",
   },
+  {
+    accessorKey: "description",
+    header: "Description",
+  },
 ];

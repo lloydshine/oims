@@ -4,6 +4,8 @@ import { columns } from "./columns";
 import { getEquipments } from "@/actions/equipment.action";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowBigDownDash, HandCoins } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function EqipmentsPage() {
   const equipments = await getEquipments();
@@ -14,7 +16,8 @@ export default async function EqipmentsPage() {
         <ModeToggle />
       </header>
       <br />
-      <div className="flex my-10 gap-6">
+
+      <div className="flex my-10 gap-6 items-center">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 space-x-5">
             <CardTitle className="text-[11px] font-medium">
@@ -39,6 +42,9 @@ export default async function EqipmentsPage() {
             <p className="text-xs text-muted-foreground">10 from last month</p>
           </CardContent>
         </Card>
+        <Button asChild variant="outline">
+          <Link href="/equipments/add">Add Equipment</Link>
+        </Button>
       </div>
       <DataTable columns={columns} data={equipments} />
     </section>
