@@ -6,6 +6,10 @@ import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<User>[] = [
   {
+    accessorKey: "assignedOffice",
+    header: "Assigned Office",
+  },
+  {
     accessorKey: "role",
     header: "Role",
     cell: ({ row }) => {
@@ -21,10 +25,6 @@ export const columns: ColumnDef<User>[] = [
         </div>
       );
     },
-  },
-  {
-    accessorKey: "assignedOffice",
-    header: "Office",
   },
   {
     accessorKey: "username",

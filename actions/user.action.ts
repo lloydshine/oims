@@ -8,8 +8,12 @@ import { redirect } from "next/navigation";
 
 export async function getUsers() {
   try {
-    const user = await prisma.user.findMany();
-    return user;
+    const users = await prisma.user.findMany({
+      orderBy: {
+        assignedOffice: "asc", // You can change this to 'desc' if you want to sort in descending order
+      },
+    });
+    return users;
   } catch (error) {
     return [];
   }

@@ -31,4 +31,8 @@ export const columns: ColumnDef<Equipment>[] = [
     accessorKey: "description",
     header: "Description",
   },
+  {
+    accessorKey: "dateAdded",
+    header: "Date Added",
+  },
 ];

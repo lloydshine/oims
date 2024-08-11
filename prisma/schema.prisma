@@ -75,6 +75,7 @@ model Equipment {
   isAvailable     Boolean?          @default(false)
   imageUrl        String?
   BorrowEquipment BorrowEquipment[]
+  dateAdded       DateTime          @default(now())
 }
 
 model Borrow {

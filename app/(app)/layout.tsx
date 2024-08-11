@@ -1,4 +1,5 @@
 import { Sidebar } from "@/components/main/Sidebar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { validateRequest } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
@@ -14,7 +15,9 @@ export default async function AppLayout({
   return (
     <main className="flex h-screen">
       <Sidebar />
-      <div className="flex-1 bg-secondary p-10">{children}</div>
+      <ScrollArea className="flex flex-col w-full max-h-screen p-10 bg-secondary">
+        {children}
+      </ScrollArea>
     </main>
   );
 }
