@@ -13,7 +13,6 @@ export default async function EqipmentsPage() {
     <section>
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Equipments</h1>
-        <ModeToggle />
       </header>
       <br />
 

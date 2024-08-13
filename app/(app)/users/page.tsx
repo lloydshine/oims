@@ -9,7 +9,6 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -21,7 +20,6 @@ export default async function UsersPage() {
     <section>
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Users</h1>
-        <ModeToggle />
       </header>
       <br />
       <Button asChild>
@@ -34,7 +32,7 @@ export default async function UsersPage() {
       <section className="mt-20">
         <h1 className="text-2xl font-semibold mb-10">User Logs</h1>
         <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
+          <TableCaption>A list of user logs.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">User</TableHead>
@@ -51,12 +49,6 @@ export default async function UsersPage() {
               <TableCell className="text-right">Report</TableCell>
             </TableRow>
           </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={3}>Total</TableCell>
-              <TableCell className="text-right">$2,500.00</TableCell>
-            </TableRow>
-          </TableFooter>
         </Table>
       </section>
     </section>

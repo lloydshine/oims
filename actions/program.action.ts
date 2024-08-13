@@ -5,49 +5,49 @@ import { ActionResult } from "@/lib/form";
 import { Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
 
-export async function getDepartments() {
+export async function getPrograms() {
   try {
-    const department = await prisma.department.findMany();
-    return department;
+    const programs = await prisma.program.findMany();
+    return programs;
   } catch (error) {
     return [];
   }
 }
 
-export async function getDepartment(shortName: string) {
+export async function getDepartmentPrograms(departmentId: string) {
   try {
-    const department = await prisma.department.findUnique({
-      where: { shortName },
+    const programs = await prisma.program.findMany({
+      where: { departmentId },
     });
-    return department;
+    return programs;
   } catch (error) {
-    return null;
+    return [];
   }
 }
 
-export async function createDepartment(
+export async function createProgram(
   _: any,
   formData: FormData
 ): Promise<ActionResult> {
   const name = formData.get("name") as string;
   const shortName = formData.get("shortName") as string;
+  const departmentId = formData.get("departmentId") as string;
   try {
-    await prisma.department.create({
+    await prisma.program.create({
       data: {
         name,
         shortName,
+        departmentId,
       },
     });
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === "P2002") {
         return {
-          error: "Department already exist",
+          error: "Program already exist",
         };
       }
     }
-    console.log(e);
-
     return {
       error: "An unknown error occurred",
     };

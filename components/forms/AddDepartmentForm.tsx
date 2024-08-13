@@ -10,7 +10,7 @@ import { createDepartment } from "@/actions/department.action";
 export function AddDepartmentForm() {
   return (
     <Form action={createDepartment}>
-      <Button asChild className="mb-10">
+      <Button asChild className="mb-10" variant="link">
         <Link href="/departments">Back</Link>
       </Button>
       <div className="flex flex-col gap-5">

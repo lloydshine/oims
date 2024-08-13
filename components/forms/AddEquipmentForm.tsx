@@ -18,7 +18,7 @@ import { createEquipment } from "@/actions/equipment.action";
 export function AddEquipmentForm() {
   return (
     <Form action={createEquipment}>
-      <Button asChild className="mb-10">
+      <Button asChild className="mb-10" variant="link">
         <Link href="/equipments">Back</Link>
       </Button>
       <div className="flex flex-col gap-5">

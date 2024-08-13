@@ -19,7 +19,7 @@ import Link from "next/link";
 export function AddUserForm() {
   return (
     <Form action={createUser}>
-      <Button asChild className="mb-10">
+      <Button asChild className="mb-10" variant="link">
         <Link href="/users">Back</Link>
       </Button>
       <div className="flex gap-5 w-full justify-center">

@@ -32,7 +32,6 @@ export default function Navbar() {
         <Button asChild>
           <Link href="/dashboard">Admin</Link>
         </Button>
-        <ModeToggle />
       </div>
     </nav>
   );
