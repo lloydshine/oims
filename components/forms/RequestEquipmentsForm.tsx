@@ -37,7 +37,7 @@ export function RequestEquipmentsForm() {
     <Form action={createBorrow}>
       <div className="flex flex-col gap-5">
         <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label htmlFor="email">Borrower's Name</Label>
+          <Label htmlFor="email">Borrower&apos;s Name</Label>
           <Input
             type="text"
             id="borrower"
