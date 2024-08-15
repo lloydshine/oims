@@ -1,5 +1,6 @@
 import { Sidebar } from "@/components/main/Sidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Toaster } from "@/components/ui/sonner";
 import { validateRequest } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
@@ -18,6 +19,7 @@ export default async function AppLayout({
       <ScrollArea className="flex flex-col w-full max-h-screen p-10 bg-secondary">
         {children}
       </ScrollArea>
+      <Toaster />
     </main>
   );
 }

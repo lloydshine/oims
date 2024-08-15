@@ -23,7 +23,7 @@ export default async function UsersPage() {
       </header>
       <br />
       <Button asChild>
-        <Link href="/users/add">Add User</Link>
+        <Link href="/admin/users/add">Add User</Link>
       </Button>
       <br />
       <br />

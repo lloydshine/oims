@@ -11,6 +11,7 @@ export const createUserFormSchema = z.object({
   firstName: z.string().min(2).max(50),
   middleName: z.string().min(2).max(50),
   lastName: z.string().min(2).max(50),
+  contactNumber: z.string().min(2).max(50),
 });
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,14 +36,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
+import { useState, useTransition } from "react";
+import { register } from "@/actions/auth.action";
+import { toast } from "sonner";
 
 export function AddUserForm() {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
   const form = useForm<z.infer<typeof createUserFormSchema>>({
     resolver: zodResolver(createUserFormSchema),
   });
 
   function onSubmit(values: z.infer<typeof createUserFormSchema>) {
-    console.log(values);
+    setError(null);
+    startTransition(async () => {
+      const res = await register(values);
+      if (res?.error) {
+        setError(res.error); // Set the error message
+      }
+    });
+    toast("User has been created.");
   }
   return (
     <Form {...form}>
@@ -149,6 +163,19 @@ export function AddUserForm() {
             />
             <FormField
               control={form.control}
+              name="contactNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contact Number</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Contact Number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="firstName"
               render={({ field }) => (
                 <FormItem>
@@ -189,7 +216,14 @@ export function AddUserForm() {
           </div>
         </section>
         <section className="flex justify-end">
-          <Button type="submit">Create</Button>
+          <Button type="submit" disabled={isPending}>
+            Create
+          </Button>
+          {error && (
+            <div>
+              <p>{error}</p>
+            </div>
+          )}
         </section>
       </form>
     </Form>

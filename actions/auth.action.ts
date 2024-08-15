@@ -1,57 +1,33 @@
 "use server";
-
 import bcrypt from "bcrypt";
+import { z } from "zod";
 import { cookies } from "next/headers";
 import { lucia, validateRequest } from "@/lib/auth";
+import { loginFormSchema } from "@/components/forms/LoginForm";
 import { redirect } from "next/navigation";
-import type { ActionResult } from "@/lib/form";
-import { generateId } from "lucia";
 import prisma from "@/lib/db";
-import { Prisma } from "@prisma/client";
+import { Office, Prisma, UserRole } from "@prisma/client";
+import { createUserFormSchema } from "@/components/forms/AddUserForm";
+import { ActionResult } from "@/lib/form";
 
-export async function login(_: any, formData: FormData): Promise<ActionResult> {
-  "use server";
-  const username = formData.get("username");
-  if (
-    typeof username !== "string" ||
-    username.length < 3 ||
-    username.length > 31 ||
-    !/^[a-z0-9_-]+$/.test(username)
-  ) {
-    return {
-      error: "Invalid username",
-    };
-  }
-  const password = formData.get("password");
-  if (
-    typeof password !== "string" ||
-    password.length < 6 ||
-    password.length > 255
-  ) {
-    return {
-      error: "Invalid password",
-    };
-  }
-
-  // Query the user from the database using Prisma
+export async function login(data: z.infer<typeof loginFormSchema>) {
   const existingUser = await prisma.user.findUnique({
-    where: { username },
+    where: { username: data.username },
   });
-
   if (!existingUser) {
     return {
       error: "Incorrect username or password",
     };
   }
-
-  const validPassword = await bcrypt.compare(password, existingUser.password);
-
+  const validPassword = await bcrypt.compare(
+    data.password,
+    existingUser.password
+  );
   if (!validPassword) {
     return {
       error: "Incorrect username or password",
     };
   }
-
   const session = await lucia.createSession(existingUser.id, {});
   const sessionCookie = lucia.createSessionCookie(session.id);
   cookies().set(
@@ -59,59 +35,35 @@ export async function login(_: any, formData: FormData): Promise<ActionResult> {
     sessionCookie.value,
     sessionCookie.attributes
   );
-  return redirect("/dashboard");
+  redirect("/admin/dashboard");
 }
 
-export async function register(
-  _: any,
-  formData: FormData
-): Promise<ActionResult> {
-  "use server";
-  const username = formData.get("username");
-  if (
-    typeof username !== "string" ||
-    username.length < 4 ||
-    username.length > 31 ||
-    !/^[a-z0-9_-]+$/.test(username)
-  ) {
-    return {
-      error: "Invalid username",
-    };
-  }
-
-  const password = formData.get("password");
-  if (
-    typeof password !== "string" ||
-    password.length < 6 ||
-    password.length > 255
-  ) {
-    return {
-      error: "Invalid password",
-    };
-  }
-
+export async function register(data: z.infer<typeof createUserFormSchema>) {
   const saltRounds = 10; // Adjust as needed
-  const passwordHash = await bcrypt.hash(password, saltRounds);
-  const userId = generateId(15);
+  const passwordHash = await bcrypt.hash(data.password, saltRounds);
 
   try {
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
-        id: userId,
-        username: username,
+        username: data.username,
         password: passwordHash,
-        role: "ASSISTANT",
-        assignedOffice: "GUIDANCE",
+        role: data.role as UserRole,
+        assignedOffice: data.assignedOffice as Office,
+        firstName: data.firstName,
+        middleName: data.middleName,
+        lastName: data.lastName,
+        email: data.email,
+        contactNumber: data.contactNumber,
       },
     });
 
-    const session = await lucia.createSession(userId, {});
-    const sessionCookie = lucia.createSessionCookie(session.id);
-    cookies().set(
-      sessionCookie.name,
-      sessionCookie.value,
-      sessionCookie.attributes
-    );
+    // const session = await lucia.createSession(user.id, {});
+    // const sessionCookie = lucia.createSessionCookie(session.id);
+    // cookies().set(
+    //   sessionCookie.name,
+    //   sessionCookie.value,
+    //   sessionCookie.attributes
+    // );
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       // The .code property can be accessed in a type-safe manner
@@ -123,7 +75,7 @@ export async function register(
       error: "An unknown error occurred",
     };
   }
-  return redirect("/dashboard");
+  redirect("/admin/users");
 }
 
 export async function logout(): Promise<ActionResult> {
