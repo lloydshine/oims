@@ -11,7 +11,7 @@ export function AddDepartmentForm() {
   return (
     <Form action={createDepartment}>
       <Button asChild className="mb-10" variant="link">
-        <Link href="/departments">Back</Link>
+        <Link href="/admin/departments">Back</Link>
       </Button>
       <div className="flex flex-col gap-5">
         <div className="grid w-full max-w-sm items-center gap-1.5">

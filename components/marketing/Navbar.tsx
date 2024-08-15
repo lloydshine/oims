@@ -30,7 +30,7 @@ export default function Navbar() {
       </div>
       <div className="flex gap-4 items-center">
         <Button asChild>
-          <Link href="/dashboard">Admin</Link>
+          <Link href="/admin/dashboard">Admin</Link>
         </Button>
       </div>
     </nav>

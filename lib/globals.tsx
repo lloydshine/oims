@@ -9,17 +9,17 @@ import {
 } from "lucide-react";
 
 export const appLinks = [
-  { tag: "Dashboard", href: "/dashboard", icon: <PieChartIcon /> },
-  { tag: "Admission", href: "/admission", icon: <BookIcon /> },
-  { tag: "Events", href: "/events", icon: <CalendarCheck /> },
-  { tag: "Equipments", href: "/equipments", icon: <BaggageClaimIcon /> },
-  { tag: "Career", href: "/career", icon: <HardHatIcon /> },
-  { tag: "Certificates", href: "/certificates", icon: <BookIcon /> },
+  { tag: "Dashboard", href: "/admin/dashboard", icon: <PieChartIcon /> },
+  { tag: "Admission", href: "/admin/admission", icon: <BookIcon /> },
+  { tag: "Events", href: "/admin/events", icon: <CalendarCheck /> },
+  { tag: "Equipments", href: "/admin/equipments", icon: <BaggageClaimIcon /> },
+  { tag: "Career", href: "/admin/career", icon: <HardHatIcon /> },
+  { tag: "Certificates", href: "/admin/certificates", icon: <BookIcon /> },
 ];
 
 export const adminLinks = [
-  { tag: "Users", href: "/users", icon: <User2Icon /> },
-  { tag: "Departments", href: "/departments", icon: <GroupIcon /> },
+  { tag: "Users", href: "/admin/users", icon: <User2Icon /> },
+  { tag: "Departments", href: "/admin/departments", icon: <GroupIcon /> },
 ];
 
 export const marketingLinks = [

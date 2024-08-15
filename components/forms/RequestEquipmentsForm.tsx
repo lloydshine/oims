@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createBorrow } from "@/actions/borrow.action";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Department, Equipment } from "@prisma/client";
 import { getDepartments } from "@/actions/department.action";
 import { getEquipments } from "@/actions/equipment.action";
@@ -68,11 +68,13 @@ export function RequestEquipmentsForm() {
         </div>
         <section>
           <h1 className="mb-5 font-bold">Equipments</h1>
-          <div className="flex gap-4 flex-wrap">
-            {equipments.map((equipment) => (
-              <EquipmentCard equipment={equipment} key={equipment.id} />
-            ))}
-          </div>
+          <Suspense fallback={<>Loading Items</>}>
+            <div className="flex gap-4 flex-wrap">
+              {equipments.map((equipment) => (
+                <EquipmentCard equipment={equipment} key={equipment.id} />
+              ))}
+            </div>
+          </Suspense>
         </section>
         <Button type="submit">Create Request</Button>
       </div>

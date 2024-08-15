@@ -19,7 +19,7 @@ export function AddEquipmentForm() {
   return (
     <Form action={createEquipment}>
       <Button asChild className="mb-10" variant="link">
-        <Link href="/equipments">Back</Link>
+        <Link href="/admin/equipments">Back</Link>
       </Button>
       <div className="flex flex-col gap-5">
         <div className="grid w-full max-w-sm items-center gap-1.5">
