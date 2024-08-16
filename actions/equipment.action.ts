@@ -1,9 +1,10 @@
 "use server";
 
+import { addEquipmentFormSchema } from "@/components/forms/AddEquipmentForm";
 import prisma from "@/lib/db";
-import { ActionResult } from "@/lib/form";
 import { Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 
 export async function getEquipments() {
   try {
@@ -15,21 +16,16 @@ export async function getEquipments() {
 }
 
 export async function createEquipment(
-  _: any,
-  formData: FormData
-): Promise<ActionResult> {
-  const name = formData.get("name") as string;
-  const description = formData.get("description") as string;
-  const isAvailable = formData.get("isAvailable") == "true";
-  const quantity = parseInt(formData.get("quantity") as string);
+  data: z.infer<typeof addEquipmentFormSchema>
+) {
   try {
-    //// Create a new user
     await prisma.equipment.create({
       data: {
-        name,
-        description,
-        isAvailable,
-        quantity,
+        name: data.name,
+        brand: data.brand,
+        isAvailable: data.isAvailable == "true",
+        price: parseInt(data.price),
+        quantity: parseInt(data.quantity),
       },
     });
   } catch (e) {
@@ -40,11 +36,9 @@ export async function createEquipment(
         };
       }
     }
-    console.log(e);
-
     return {
       error: "An unknown error occurred",
     };
   }
-  return redirect("/equipments");
+  redirect("/admin/equipments");
 }

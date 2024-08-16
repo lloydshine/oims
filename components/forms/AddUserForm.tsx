@@ -38,11 +38,12 @@ import {
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { register } from "@/actions/auth.action";
-import { toast } from "sonner";
+import { useToast } from "../ui/use-toast";
 
 export function AddUserForm() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof createUserFormSchema>>({
     resolver: zodResolver(createUserFormSchema),
@@ -52,11 +53,11 @@ export function AddUserForm() {
     setError(null);
     startTransition(async () => {
       const res = await register(values);
-      if (res?.error) {
-        setError(res.error); // Set the error message
-      }
+      toast({
+        title: "Create User",
+        description: res.error ? res.error : "User Successfully Created!",
+      });
     });
-    toast("User has been created.");
   }
   return (
     <Form {...form}>

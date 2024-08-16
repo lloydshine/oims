@@ -70,7 +70,8 @@ model Session {
 model Equipment {
   id              String            @id @default(uuid())
   name            String
-  description     String?
+  brand           String?
+  price           Int?
   quantity        Int
   isAvailable     Boolean?          @default(false)
   imageUrl        String?

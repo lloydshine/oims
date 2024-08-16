@@ -1,6 +1,6 @@
 import { Sidebar } from "@/components/main/Sidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toaster";
 import { validateRequest } from "@/lib/auth";
 import { redirect } from "next/navigation";
 

@@ -28,8 +28,16 @@ export const columns: ColumnDef<Equipment>[] = [
     header: "Quantity",
   },
   {
-    accessorKey: "description",
-    header: "Description",
+    accessorKey: "brand",
+    header: "Brand",
+  },
+  {
+    accessorKey: "price",
+    header: "Price",
+    cell: ({ row }) => {
+      const price = row.getValue("price") as string;
+      return <p>Php{price}.00</p>;
+    },
   },
   {
     accessorKey: "dateAdded",
