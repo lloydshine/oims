@@ -19,7 +19,7 @@ export function EquipmentCard({ equipment }: { equipment: Equipment }) {
         <Badge>{equipment.isAvailable ? "Available" : "Not Available"}</Badge>
       </CardHeader>
       <CardContent>
-        <p className="text-muted-foreground">{equipment.description}</p>
+        <p className="text-muted-foreground">{equipment.brand}</p>
         <Image
           src="/vercel.svg"
           alt="Photo by Drew Beamer"
