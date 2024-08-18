@@ -52,5 +52,5 @@ export async function createDepartment(
       error: "An unknown error occurred",
     };
   }
-  return redirect("/departments");
+  return redirect("/admin/departments");
 }

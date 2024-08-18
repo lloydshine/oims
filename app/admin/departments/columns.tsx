@@ -20,7 +20,7 @@ export const departmentCol: ColumnDef<Department>[] = [
       const department = row.getValue("shortName");
       return (
         <Button asChild variant="link">
-          <Link href={`departments/${department}`}>View</Link>
+          <Link href={`/admin/departments/${department}`}>View</Link>
         </Button>
       );
     },
