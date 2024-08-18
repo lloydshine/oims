@@ -1,9 +1,10 @@
 "use server";
 
+import { DepartmentFormSchema } from "@/components/forms/DepartmentForm";
 import prisma from "@/lib/db";
-import { ActionResult } from "@/lib/form";
 import { Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 
 export async function getDepartments() {
   try {
@@ -14,10 +15,10 @@ export async function getDepartments() {
   }
 }
 
-export async function getDepartment(shortName: string) {
+export async function getDepartment(id: string) {
   try {
     const department = await prisma.department.findUnique({
-      where: { shortName },
+      where: { id },
     });
     return department;
   } catch (error) {
@@ -26,31 +27,52 @@ export async function getDepartment(shortName: string) {
 }
 
 export async function createDepartment(
-  _: any,
-  formData: FormData
-): Promise<ActionResult> {
-  const name = formData.get("name") as string;
-  const shortName = formData.get("shortName") as string;
+  data: z.infer<typeof DepartmentFormSchema>
+) {
   try {
     await prisma.department.create({
       data: {
-        name,
-        shortName,
+        name: data.name,
+        shortName: data.shortname,
       },
     });
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === "P2002") {
         return {
-          error: "Department already exist",
+          error: "Department already stored",
         };
       }
     }
-    console.log(e);
-
     return {
       error: "An unknown error occurred",
     };
   }
-  return redirect("/admin/departments");
+  redirect("/admin/departments");
+}
+
+export async function updateDepartment(
+  data: z.infer<typeof DepartmentFormSchema>
+) {
+  try {
+    await prisma.department.update({
+      where: { id: data.id },
+      data: {
+        name: data.name,
+        shortName: data.shortname,
+      },
+    });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002") {
+        return {
+          error: "Department already stored",
+        };
+      }
+    }
+    return {
+      error: "An unknown error occurred",
+    };
+  }
+  redirect("/admin/departments");
 }

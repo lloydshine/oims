@@ -7,6 +7,10 @@ import Link from "next/link";
 
 export const departmentCol: ColumnDef<Department>[] = [
   {
+    accessorKey: "id",
+    header: "ID",
+  },
+  {
     accessorKey: "name",
     header: "Department Name",
   },
@@ -17,10 +21,10 @@ export const departmentCol: ColumnDef<Department>[] = [
   {
     header: "Action",
     cell: ({ row }) => {
-      const department = row.getValue("shortName");
+      const id = row.getValue("id");
       return (
         <Button asChild variant="link">
-          <Link href={`/admin/departments/${department}`}>View</Link>
+          <Link href={`/admin/departments/${id}`}>View</Link>
         </Button>
       );
     },

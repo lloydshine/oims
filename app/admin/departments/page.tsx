@@ -1,12 +1,9 @@
-import { DataTable } from "@/components/data-table";
-import { ModeToggle } from "@/components/theme-provider";
-import { departmentCol } from "./columns";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { getDepartments } from "@/actions/department.action";
+import { Suspense } from "react";
+import { DepartmentList } from "./DepartmentList";
 
-export default async function DepartmentsPage() {
-  const departments = await getDepartments();
+export default function DepartmentsPage() {
   return (
     <section>
       <header className="flex items-center justify-between">
@@ -18,7 +15,9 @@ export default async function DepartmentsPage() {
       </Button>
       <br />
       <br />
-      <DataTable columns={departmentCol} data={departments} />
+      <Suspense fallback={<>Loading Departments...</>}>
+        <DepartmentList />
+      </Suspense>
     </section>
   );
 }
