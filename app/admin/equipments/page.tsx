@@ -1,4 +1,3 @@
-import { ModeToggle } from "@/components/theme-provider";
 import { DataTable } from "@/components/data-table";
 import { columns } from "./columns";
 import { getEquipments } from "@/actions/equipment.action";
@@ -42,7 +41,7 @@ export default async function EqipmentsPage() {
           </CardContent>
         </Card>
         <Button asChild variant="outline">
-          <Link href="/equipments/add">Add Equipment</Link>
+          <Link href="/admin/equipments/add">Add Equipment</Link>
         </Button>
       </div>
       <DataTable columns={columns} data={equipments} />
