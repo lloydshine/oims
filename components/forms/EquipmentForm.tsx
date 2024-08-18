@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
 import { useToast } from "../ui/use-toast";
-import { createEquipment } from "@/actions/equipment.action";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import * as React from "react";
@@ -25,7 +24,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const addEquipmentFormSchema = z.object({
+export const EquipmentFormSchema = z.object({
+  id: z.string().optional(),
   name: z.string().min(2).max(50),
   brand: z.string().min(2).max(50),
   price: z.string(),
@@ -33,31 +33,49 @@ export const addEquipmentFormSchema = z.object({
   isAvailable: z.string(),
 });
 
-export function AddEquipmentForm() {
+interface EquipmentFormProps {
+  defaultValues?: Partial<z.infer<typeof EquipmentFormSchema>>;
+  onSubmit?: (values: z.infer<typeof EquipmentFormSchema>) => void;
+}
+
+export function EquipmentForm({ defaultValues, onSubmit }: EquipmentFormProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof addEquipmentFormSchema>>({
-    resolver: zodResolver(addEquipmentFormSchema),
+  const form = useForm<z.infer<typeof EquipmentFormSchema>>({
+    resolver: zodResolver(EquipmentFormSchema),
+    defaultValues,
   });
 
-  function onSubmit(values: z.infer<typeof addEquipmentFormSchema>) {
+  const handleSubmit = (values: z.infer<typeof EquipmentFormSchema>) => {
     setError(null);
     startTransition(async () => {
-      const res = await createEquipment(values);
-      toast({
-        title: "Create User",
-        description: res.error ? res.error : "Equipment Successfully Created!",
-      });
+      try {
+        await onSubmit?.(values);
+        toast({
+          title: defaultValues ? "Update Equipment" : "Create Equipment",
+          description: defaultValues
+            ? "Equipment Successfully Updated!"
+            : "Equipment Successfully Created!",
+        });
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      }
     });
-  }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 p-2">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="space-y-3 p-2"
+      >
         <section className="flex gap-20">
           <div className="flex-1 space-y-3">
-            <h1 className="font-black text-lg mb-5">Add Equipment</h1>
+            <h1 className="font-black text-lg mb-5">
+              {defaultValues ? "Edit Equipment" : "Add Equipment"}
+            </h1>
             <FormField
               control={form.control}
               name="name"
@@ -138,7 +156,7 @@ export function AddEquipmentForm() {
         </section>
         <section className="flex justify-end">
           <Button type="submit" disabled={isPending}>
-            Add Equipment
+            {defaultValues ? "Update Equipment" : "Add Equipment"}
           </Button>
           {error && (
             <div>

@@ -2,7 +2,8 @@
 
 import { z } from "zod";
 
-export const createUserFormSchema = z.object({
+export const UserFormSchema = z.object({
+  id: z.string().optional(),
   username: z.string().min(2).max(50),
   password: z.string().min(2).max(50),
   role: z.string().min(2).max(50),
@@ -37,31 +38,46 @@ import {
 } from "@/components/ui/select";
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import { register } from "@/actions/auth.action";
 import { useToast } from "../ui/use-toast";
 
-export function AddUserForm() {
+interface UserFormProps {
+  defaultValues?: Partial<z.infer<typeof UserFormSchema>>;
+  onSubmit?: (values: z.infer<typeof UserFormSchema>) => void;
+}
+
+export function UserForm({ defaultValues, onSubmit }: UserFormProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof createUserFormSchema>>({
-    resolver: zodResolver(createUserFormSchema),
+  const form = useForm<z.infer<typeof UserFormSchema>>({
+    resolver: zodResolver(UserFormSchema),
+    defaultValues,
   });
 
-  function onSubmit(values: z.infer<typeof createUserFormSchema>) {
+  const handleSubmit = (values: z.infer<typeof UserFormSchema>) => {
     setError(null);
     startTransition(async () => {
-      const res = await register(values);
-      toast({
-        title: "Create User",
-        description: res.error ? res.error : "User Successfully Created!",
-      });
+      try {
+        await onSubmit?.(values);
+        toast({
+          title: defaultValues ? "Update User" : "Create User",
+          description: defaultValues
+            ? "User Successfully Updated!"
+            : "User Successfully Created!",
+        });
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      }
     });
-  }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 p-2">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="space-y-3 p-2"
+      >
         <section className="flex gap-20">
           <div className="flex-1 space-y-3">
             <h1 className="font-black text-lg mb-5">Account</h1>
@@ -218,7 +234,7 @@ export function AddUserForm() {
         </section>
         <section className="flex justify-end">
           <Button type="submit" disabled={isPending}>
-            Create
+            {defaultValues ? "Update User" : "Add User"}
           </Button>
           {error && (
             <div>

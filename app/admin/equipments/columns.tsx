@@ -1,8 +1,10 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Equipment } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
 
 export const columns: ColumnDef<Equipment>[] = [
   {
@@ -42,5 +44,17 @@ export const columns: ColumnDef<Equipment>[] = [
   {
     accessorKey: "dateAdded",
     header: "Date Added",
+  },
+  {
+    accessorKey: "id",
+    header: "Action",
+    cell: ({ row }) => {
+      const id = row.getValue("id") as string;
+      return (
+        <Button variant="link">
+          <Link href={`/admin/equipments/${id}`}>View</Link>
+        </Button>
+      );
+    },
   },
 ];

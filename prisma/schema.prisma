@@ -51,11 +51,11 @@ model User {
   password       String
   role           UserRole
   assignedOffice Office
-  firstName      String?
-  middleName     String?
-  lastName       String?
-  contactNumber  String?
-  email          String?
+  firstName      String
+  middleName     String
+  lastName       String
+  contactNumber  String
+  email          String
   sessions       Session[]
 }
 
@@ -70,10 +70,10 @@ model Session {
 model Equipment {
   id              String            @id @default(uuid())
   name            String
-  brand           String?
-  price           Int?
+  brand           String
+  price           Int
   quantity        Int
-  isAvailable     Boolean?          @default(false)
+  isAvailable     Boolean           @default(false)
   imageUrl        String?
   BorrowEquipment BorrowEquipment[]
   dateAdded       DateTime          @default(now())

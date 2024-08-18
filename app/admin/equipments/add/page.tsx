@@ -1,9 +1,10 @@
-import { AddEquipmentForm } from "@/components/forms/AddEquipmentForm";
+import { createEquipment } from "@/actions/equipment.action";
+import { EquipmentForm } from "@/components/forms/EquipmentForm";
 
 export default function AddEquipmentPage() {
   return (
     <section>
-      <AddEquipmentForm />
+      <EquipmentForm onSubmit={createEquipment} />
     </section>
   );
 }

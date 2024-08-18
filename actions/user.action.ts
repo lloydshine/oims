@@ -14,3 +14,14 @@ export async function getUsers() {
     return [];
   }
 }
+
+export async function getUser(id: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+    return user;
+  } catch (error) {
+    return null;
+  }
+}

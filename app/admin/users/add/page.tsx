@@ -1,9 +1,9 @@
-import { AddUserForm } from "@/components/forms/AddUserForm";
+import { UserForm } from "@/components/forms/UserForm";
 
 export default function AddUserPage() {
   return (
     <section>
-      <AddUserForm />
+      <UserForm />
     </section>
   );
 }

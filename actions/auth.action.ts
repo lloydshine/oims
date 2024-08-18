@@ -7,7 +7,7 @@ import { loginFormSchema } from "@/components/forms/LoginForm";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/db";
 import { Office, Prisma, UserRole } from "@prisma/client";
-import { createUserFormSchema } from "@/components/forms/AddUserForm";
+import { UserFormSchema } from "@/components/forms/UserForm";
 import { ActionResult } from "@/lib/form";
 
 export async function login(data: z.infer<typeof loginFormSchema>) {
@@ -38,7 +38,7 @@ export async function login(data: z.infer<typeof loginFormSchema>) {
   redirect("/admin/dashboard");
 }
 
-export async function register(data: z.infer<typeof createUserFormSchema>) {
+export async function register(data: z.infer<typeof UserFormSchema>) {
   const saltRounds = 10; // Adjust as needed
   const passwordHash = await bcrypt.hash(data.password, saltRounds);
 
@@ -56,7 +56,6 @@ export async function register(data: z.infer<typeof createUserFormSchema>) {
         contactNumber: data.contactNumber,
       },
     });
-
     // const session = await lucia.createSession(user.id, {});
     // const sessionCookie = lucia.createSessionCookie(session.id);
     // cookies().set(
@@ -95,4 +94,37 @@ export async function logout(): Promise<ActionResult> {
     sessionCookie.attributes
   );
   return redirect("/login");
+}
+
+export async function updateUser(data: z.infer<typeof UserFormSchema>) {
+  const saltRounds = 10; // Adjust as needed
+  const passwordHash = await bcrypt.hash(data.password, saltRounds);
+
+  try {
+    const user = await prisma.user.update({
+      where: { id: data.id },
+      data: {
+        username: data.username,
+        password: passwordHash,
+        role: data.role as UserRole,
+        assignedOffice: data.assignedOffice as Office,
+        firstName: data.firstName,
+        middleName: data.middleName,
+        lastName: data.lastName,
+        email: data.email,
+        contactNumber: data.contactNumber,
+      },
+    });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      // The .code property can be accessed in a type-safe manner
+      if (e.code === "P2002") {
+        console.log("Username already taken");
+      }
+    }
+    return {
+      error: "An unknown error occurred",
+    };
+  }
+  redirect("/admin/users");
 }
