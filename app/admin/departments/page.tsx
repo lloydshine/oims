@@ -14,7 +14,7 @@ export default async function DepartmentsPage() {
       </header>
       <br />
       <Button asChild>
-        <Link href="/departments/add">Add Department</Link>
+        <Link href="/admin/departments/add">Add Department</Link>
       </Button>
       <br />
       <br />

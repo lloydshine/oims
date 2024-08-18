@@ -15,7 +15,7 @@ export default async function DepartmentPage({ params }: { params: any }) {
   return (
     <section>
       <Button asChild className="mb-10" variant="link">
-        <Link href="/departments">Back</Link>
+        <Link href="/admin/departments">Back</Link>
       </Button>
       <h1 className="text-3xl font-bold mb-20">{department?.name}</h1>
       <DataTable columns={programCol} data={programs} />
