@@ -68,8 +68,8 @@ export default function EquipmentList({ control }: { control: any }) {
       <h1>Equipment List</h1>
       <ul>
         {equipments.map((equipment) => (
-          <div>
-            <li key={equipment.id}>
+          <div key={equipment.id}>
+            <li>
               {equipment.name} - {equipment.quantity} available
             </li>
             <Button onClick={(e) => addItem(equipment.id, e)}>Add</Button>
