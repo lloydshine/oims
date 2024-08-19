@@ -1,83 +1,170 @@
 "use client";
 
-import { Form } from "@/lib/form";
-import { Label } from "../ui/label";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useEffect, useState, useTransition } from "react";
+import { useToast } from "../ui/use-toast";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createBorrow } from "@/actions/borrow.action";
-import { Suspense, useEffect, useState } from "react";
-import { Department, Equipment } from "@prisma/client";
+import { Department } from "@prisma/client";
 import { getDepartments } from "@/actions/department.action";
-import { getEquipments } from "@/actions/equipment.action";
-import { EquipmentCard } from "@/app/request/equipments/EquipmentCard";
+import EquipmentList from "@/app/request/equipments/EquipmentList";
 
-export function RequestEquipmentsForm() {
+export const RequestEquipmentsFormSchema = z.object({
+  id: z.string().optional(),
+  borrower: z.string().min(2).max(50),
+  department: z.string().min(2).max(50),
+  event: z.string().max(50),
+  items: z
+    .array(
+      z.object({
+        equipmentId: z.string(),
+        quantity: z.number().min(1),
+      })
+    )
+    .min(1, "You must request at least one item."),
+});
+
+interface RequestEquipmentsFormProps {
+  defaultValues?: Partial<z.infer<typeof RequestEquipmentsFormSchema>>;
+  onSubmit?: (values: z.infer<typeof RequestEquipmentsFormSchema>) => void;
+}
+
+export default function RequestEquipmentsForm({
+  defaultValues,
+  onSubmit,
+}: RequestEquipmentsFormProps) {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [equipments, setEquipments] = useState<Equipment[]>([]);
+  const { toast } = useToast();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const fetchedDepartments = await getDepartments();
-      setDepartments(fetchedDepartments);
-      const fetchedEquipments = await getEquipments();
-      setEquipments(fetchedEquipments);
+    const fetchDepartments = async () => {
+      const departments = await getDepartments();
+      setDepartments(departments);
     };
-    fetchData();
+    fetchDepartments();
   }, []);
 
+  const form = useForm<z.infer<typeof RequestEquipmentsFormSchema>>({
+    resolver: zodResolver(RequestEquipmentsFormSchema),
+    defaultValues,
+  });
+
+  const handleSubmit = (
+    values: z.infer<typeof RequestEquipmentsFormSchema>
+  ) => {
+    setError(null);
+    startTransition(async () => {
+      try {
+        await onSubmit?.(values);
+        toast({
+          title: defaultValues
+            ? "Update Request Equipments"
+            : "Create Request Equipments",
+          description: defaultValues
+            ? "Request Equipments Successfully Updated!"
+            : "Request Equipments Successfully Created!",
+        });
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      }
+    });
+  };
   return (
-    <Form action={createBorrow}>
-      <div className="flex flex-col gap-5">
-        <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label htmlFor="email">Borrower&apos;s Name</Label>
-          <Input
-            type="text"
-            id="borrower"
-            name="borrower"
-            placeholder="Borrower"
-          />
-        </div>
-        <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label htmlFor="email">Event Name</Label>
-          <Input type="text" id="event" name="event" placeholder="Event" />
-        </div>
-        <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label htmlFor="isAvailable">Department</Label>
-          <Select name="isAvailable">
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select department" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {departments.map((department) => (
-                  <SelectItem key={department.id} value={department.id}>
-                    {department.name}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="space-y-3 p-2"
+      >
+        <h1 className="font-black text-lg mb-5">
+          {defaultValues
+            ? "Edit Request Equipment"
+            : "Create Request Equipment"}
+        </h1>
+        <FormField
+          control={form.control}
+          name="borrower"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Borrowers Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="event"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Event Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Event" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="department"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Department</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select department" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {departments.map((department) => (
+                    <SelectItem value={department.id} key={department.id}>
+                      {department.shortName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <section>
-          <h1 className="mb-5 font-bold">Equipments</h1>
-          <Suspense fallback={<>Loading Items</>}>
-            <div className="flex gap-4 flex-wrap">
-              {equipments.map((equipment) => (
-                <EquipmentCard equipment={equipment} key={equipment.id} />
-              ))}
-            </div>
-          </Suspense>
+          <EquipmentList control={form.control} />
         </section>
-        <Button type="submit">Create Request</Button>
-      </div>
+        <section className="flex justify-end">
+          <Button type="submit" disabled={isPending}>
+            {defaultValues
+              ? "Update Request Equipments"
+              : "Create Request Equipments"}
+          </Button>
+          {error && (
+            <div>
+              <p>{error}</p>
+            </div>
+          )}
+        </section>
+      </form>
     </Form>
   );
 }

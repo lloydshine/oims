@@ -7,7 +7,6 @@ import { useState, useTransition } from "react";
 import { useToast } from "../ui/use-toast";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import * as React from "react";
 import {
   Form,
   FormControl,
