@@ -1,3 +1,4 @@
+import { getBorrows } from "@/actions/borrow.action";
 import { getEquipments } from "@/actions/equipment.action";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +7,7 @@ import Link from "next/link";
 
 export async function EquipmentStatistics() {
   const equipments = await getEquipments();
+  const requests = await getBorrows();
   return (
     <div className="flex my-10 gap-6 items-center">
       <Card>
@@ -17,7 +19,6 @@ export async function EquipmentStatistics() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{equipments.length}</div>
-          <p className="text-xs text-muted-foreground">10 from last month</p>
         </CardContent>
       </Card>
       <Card>
@@ -28,8 +29,7 @@ export async function EquipmentStatistics() {
           <HandCoins />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{10}</div>
-          <p className="text-xs text-muted-foreground">10 from last month</p>
+          <div className="text-2xl font-bold">{requests.length}</div>
         </CardContent>
       </Card>
       <Button asChild variant="outline">

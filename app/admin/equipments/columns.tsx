@@ -2,11 +2,50 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Equipment } from "@prisma/client";
+import { Borrow, Equipment } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 
-export const columns: ColumnDef<Equipment>[] = [
+export const borrowColumns: ColumnDef<Borrow>[] = [
+  {
+    accessorKey: "id",
+    header: "ID",
+  },
+  {
+    accessorKey: "borrower",
+    header: "Borrower's Name",
+  },
+  {
+    accessorKey: "event",
+    header: "Event Name",
+  },
+  {
+    accessorKey: "departmentId",
+    header: "Department",
+  },
+  {
+    accessorKey: "dateRequested",
+    header: "Date Requested",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+  },
+  {
+    accessorKey: "id",
+    header: "Action",
+    cell: ({ row }) => {
+      const id = row.getValue("id") as string;
+      return (
+        <Button variant="link">
+          <Link href={`/request/equipments/${id}`}>View</Link>
+        </Button>
+      );
+    },
+  },
+];
+
+export const equipmentColumns: ColumnDef<Equipment>[] = [
   {
     accessorKey: "isAvailable",
     header: "Status",

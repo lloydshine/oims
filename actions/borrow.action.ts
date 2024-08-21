@@ -1,8 +1,9 @@
 "use server";
 
+import { RequestEquipmentsFormSchema } from "@/components/forms/RequestEquipmentsForm";
 import prisma from "@/lib/db";
-import { ActionResult } from "@/lib/form";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 
 export async function getBorrows() {
   try {
@@ -13,20 +14,30 @@ export async function getBorrows() {
   }
 }
 
+export async function getBorrow(id: string) {
+  try {
+    const borrow = await prisma.borrow.findUnique({ where: { id } });
+    return borrow;
+  } catch (error) {
+    return null;
+  }
+}
+
 export async function createBorrow(
-  _: any,
-  formData: FormData
-): Promise<ActionResult> {
-  const borrower = formData.get("borrower") as string;
-  const event = formData.get("event") as string;
-  const departmentId = formData.get("event") as string;
+  data: z.infer<typeof RequestEquipmentsFormSchema>
+) {
   try {
     await prisma.borrow.create({
       data: {
-        borrower,
-        event,
-        departmentId,
-        BorrowEquipment: { create: [{ equipmentId: "1", quantity: 5 }] },
+        borrower: data.borrower,
+        event: data.event,
+        departmentId: data.department,
+        BorrowEquipment: {
+          create: data.items.map((equipment) => ({
+            equipmentId: equipment.equipmentId,
+            quantity: equipment.quantity,
+          })),
+        },
       },
     });
   } catch (e) {
@@ -34,5 +45,5 @@ export async function createBorrow(
       error: "An unknown error occurred",
     };
   }
-  return redirect("/");
+  redirect("/");
 }

@@ -24,6 +24,17 @@ export async function getEquipment(id: string) {
   }
 }
 
+export async function getBorrowedEquipments(borrowId: string) {
+  try {
+    const equipments = await prisma.borrowEquipment.findMany({
+      where: { borrowId },
+    });
+    return equipments;
+  } catch (error) {
+    return [];
+  }
+}
+
 export async function updateEquipment(
   data: z.infer<typeof EquipmentFormSchema>
 ) {

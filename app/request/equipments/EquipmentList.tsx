@@ -26,21 +26,42 @@ export default function EquipmentList({ control }: { control: any }) {
 
   const addItem = (equipmentId: string, e: any) => {
     e.preventDefault();
-    // @ts-ignore
+
+    // Find the existing item index in the fields array
     const existingItemIndex = fields.findIndex(
       (item) => item.equipmentId === equipmentId
     );
 
+    // Find the equipment object from the equipments state
+    const equipment = equipments.find((eq) => eq.id === equipmentId);
+
+    if (!equipment) {
+      // Equipment not found in the state, handle the error
+      console.error("Equipment not found");
+      return;
+    }
     if (existingItemIndex !== -1) {
-      // Item already exists, increment the quantity
+      // Item already exists, check if we can increment the quantity
       const existingItem = fields[existingItemIndex];
-      update(existingItemIndex, {
-        ...existingItem,
-        quantity: existingItem.quantity + 1,
-      });
+      // Check if the new quantity is within available stock
+      if (existingItem.quantity < equipment.quantity) {
+        // Update the item with incremented quantity
+        update(existingItemIndex, {
+          ...existingItem,
+          quantity: existingItem.quantity + 1,
+        });
+      } else {
+        // Quantity exceeds available stock
+        console.warn("Cannot add more items. Exceeds available stock.");
+      }
     } else {
       // Item doesn't exist, append a new item with default quantity
-      append({ equipmentId, quantity: 1 });
+      if (equipment.quantity > 0) {
+        append({ equipmentId, quantity: 1 });
+      } else {
+        // Stock is not available to add a new item
+        console.warn("Cannot add item. Stock not available.");
+      }
     }
   };
 
