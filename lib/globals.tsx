@@ -1,3 +1,4 @@
+import { Department, Program } from "@prisma/client";
 import {
   BookIcon,
   CalendarCheck,
@@ -28,3 +29,8 @@ export const marketingLinks = [
   { tag: "Equipments", href: "/equipments" },
   { tag: "Career", href: "/career" },
 ];
+
+// TypeScript type that includes the relation
+type ProgramWithDepartment = Program & {
+  department: Department;
+};

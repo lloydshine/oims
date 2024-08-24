@@ -25,6 +25,7 @@ import {
 import { Department } from "@prisma/client";
 import { getDepartments } from "@/actions/department.action";
 import EquipmentList from "@/app/request/equipments/EquipmentList";
+import { createBorrow } from "@/actions/borrow.action";
 
 export const RequestEquipmentsFormSchema = z.object({
   id: z.string().optional(),
@@ -41,15 +42,7 @@ export const RequestEquipmentsFormSchema = z.object({
     .min(1, "You must request at least one item."),
 });
 
-interface RequestEquipmentsFormProps {
-  defaultValues?: Partial<z.infer<typeof RequestEquipmentsFormSchema>>;
-  onSubmit?: (values: z.infer<typeof RequestEquipmentsFormSchema>) => void;
-}
-
-export default function RequestEquipmentsForm({
-  defaultValues,
-  onSubmit,
-}: RequestEquipmentsFormProps) {
+export default function RequestEquipmentsForm() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -65,7 +58,13 @@ export default function RequestEquipmentsForm({
 
   const form = useForm<z.infer<typeof RequestEquipmentsFormSchema>>({
     resolver: zodResolver(RequestEquipmentsFormSchema),
-    defaultValues,
+    defaultValues: {
+      id: "",
+      borrower: "",
+      department: "",
+      event: "",
+      items: [],
+    },
   });
 
   const handleSubmit = (
@@ -74,14 +73,10 @@ export default function RequestEquipmentsForm({
     setError(null);
     startTransition(async () => {
       try {
-        await onSubmit?.(values);
+        await createBorrow(values);
         toast({
-          title: defaultValues
-            ? "Update Request Equipments"
-            : "Create Request Equipments",
-          description: defaultValues
-            ? "Request Equipments Successfully Updated!"
-            : "Request Equipments Successfully Created!",
+          title: "Create Request Equipments",
+          description: "Request Equipments Successfully Created!",
         });
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
@@ -94,11 +89,7 @@ export default function RequestEquipmentsForm({
         onSubmit={form.handleSubmit(handleSubmit)}
         className="space-y-3 p-2"
       >
-        <h1 className="font-black text-lg mb-5">
-          {defaultValues
-            ? "Edit Request Equipment"
-            : "Create Request Equipment"}
-        </h1>
+        <h1 className="font-black text-lg mb-5">Create Request Equipment</h1>
         <FormField
           control={form.control}
           name="borrower"
@@ -149,14 +140,14 @@ export default function RequestEquipmentsForm({
             </FormItem>
           )}
         />
+
         <section>
           <EquipmentList control={form.control} />
         </section>
+
         <section className="flex justify-end">
           <Button type="submit" disabled={isPending}>
-            {defaultValues
-              ? "Update Request Equipments"
-              : "Create Request Equipments"}
+            Create Request Equipments
           </Button>
           {error && (
             <div>

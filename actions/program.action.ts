@@ -1,9 +1,10 @@
 "use server";
 
+import { ProgramFormSchema } from "@/components/forms/ProgramForm";
 import prisma from "@/lib/db";
-import { ActionResult } from "@/lib/form";
 import { Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 
 export async function getPrograms() {
   try {
@@ -25,26 +26,20 @@ export async function getDepartmentPrograms(departmentId: string) {
   }
 }
 
-export async function createProgram(
-  _: any,
-  formData: FormData
-): Promise<ActionResult> {
-  const name = formData.get("name") as string;
-  const shortName = formData.get("shortName") as string;
-  const departmentId = formData.get("departmentId") as string;
+export async function createProgram(data: z.infer<typeof ProgramFormSchema>) {
   try {
     await prisma.program.create({
       data: {
-        name,
-        shortName,
-        departmentId,
+        name: data.name,
+        shortName: data.shortname,
+        departmentId: data.departmentId,
       },
     });
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === "P2002") {
         return {
-          error: "Program already exist",
+          error: "Program already stored",
         };
       }
     }
@@ -52,5 +47,5 @@ export async function createProgram(
       error: "An unknown error occurred",
     };
   }
-  return redirect("/departments");
+  redirect(`/admin/departments/${data.departmentId}`);
 }

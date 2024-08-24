@@ -3,6 +3,7 @@
 import { EquipmentFormSchema } from "@/components/forms/EquipmentForm";
 import prisma from "@/lib/db";
 import { Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -15,6 +16,15 @@ export async function getEquipments() {
   }
 }
 
+export async function deleteEquipment(id: string) {
+  try {
+    await prisma.equipment.delete({ where: { id } });
+    revalidatePath(`/admin/equipments/${id}`);
+  } catch (error) {
+    return null;
+  }
+}
+
 export async function getEquipment(id: string) {
   try {
     const equipment = await prisma.equipment.findUnique({ where: { id } });
@@ -24,10 +34,32 @@ export async function getEquipment(id: string) {
   }
 }
 
+export async function getUnreturnedApprovedEquipmentCount(equipmentId: string) {
+  try {
+    const count = await prisma.borrowEquipment.count({
+      where: {
+        equipmentId,
+        returned: false, // Filter for items that haven't been returned
+        borrow: {
+          status: "Approved", // Filter for borrows that are approved
+        },
+      },
+    });
+    return count;
+  } catch (error) {
+    console.error(
+      "Error fetching count of unreturned approved equipments:",
+      error
+    );
+    return 0;
+  }
+}
+
 export async function getBorrowedEquipments(borrowId: string) {
   try {
     const equipments = await prisma.borrowEquipment.findMany({
       where: { borrowId },
+      include: { equipment: true },
     });
     return equipments;
   } catch (error) {

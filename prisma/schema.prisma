@@ -80,21 +80,24 @@ model Equipment {
 }
 
 model Borrow {
-  id              String            @id @default(uuid())
-  borrower        String
-  department      Department        @relation(fields: [departmentId], references: [id])
-  event           String
-  dateRequested   DateTime          @default(now())
-  dateReturned    DateTime?
-  status          Status            @default(Pending)
-  BorrowEquipment BorrowEquipment[]
-  departmentId    String
+  id               String            @id @default(uuid())
+  borrower         String
+  department       Department        @relation(fields: [departmentId], references: [id])
+  event            String
+  dateRequested    DateTime          @default(now())
+  dateReturned     DateTime?
+  dateToBeReturned DateTime?
+  dateClaimed      DateTime?
+  status           Status            @default(Pending)
+  BorrowEquipment  BorrowEquipment[]
+  departmentId     String
 }
 
 model BorrowEquipment {
   id          String    @id @default(uuid())
   borrowId    String
   equipmentId String
+  returned    Boolean   @default(false)
   quantity    Int // Number of equipment items borrowed
   borrow      Borrow    @relation(fields: [borrowId], references: [id])
   equipment   Equipment @relation(fields: [equipmentId], references: [id])

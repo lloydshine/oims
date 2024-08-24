@@ -43,7 +43,7 @@ export async function register(data: z.infer<typeof UserFormSchema>) {
   const passwordHash = await bcrypt.hash(data.password, saltRounds);
 
   try {
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         username: data.username,
         password: passwordHash,
@@ -101,7 +101,7 @@ export async function updateUser(data: z.infer<typeof UserFormSchema>) {
   const passwordHash = await bcrypt.hash(data.password, saltRounds);
 
   try {
-    const user = await prisma.user.update({
+    await prisma.user.update({
       where: { id: data.id },
       data: {
         username: data.username,

@@ -12,11 +12,11 @@ export default async function EqipmentsPage() {
       <Suspense fallback={<>Loading Statistics...</>}>
         <EquipmentStatistics />
       </Suspense>
-      <Suspense fallback={<>Loading Equipments...</>}>
-        <EquipmentList />
-      </Suspense>
       <Suspense fallback={<>Loading Requests...</>}>
         <BorrowList />
+      </Suspense>
+      <Suspense fallback={<>Loading Equipments...</>}>
+        <EquipmentList />
       </Suspense>
     </section>
   );

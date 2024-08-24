@@ -22,6 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import DeleteButton from "../DeleteButton";
+import { deleteEquipment } from "@/actions/equipment.action";
 
 export const EquipmentFormSchema = z.object({
   id: z.string().optional(),
@@ -44,7 +46,16 @@ export function EquipmentForm({ defaultValues, onSubmit }: EquipmentFormProps) {
 
   const form = useForm<z.infer<typeof EquipmentFormSchema>>({
     resolver: zodResolver(EquipmentFormSchema),
-    defaultValues,
+    defaultValues: defaultValues
+      ? defaultValues
+      : {
+          id: "",
+          name: "",
+          brand: "",
+          price: "",
+          quantity: "",
+          isAvailable: "",
+        },
   });
 
   const handleSubmit = (values: z.infer<typeof EquipmentFormSchema>) => {
@@ -153,7 +164,14 @@ export function EquipmentForm({ defaultValues, onSubmit }: EquipmentFormProps) {
             />
           </div>
         </section>
-        <section className="flex justify-end">
+        <section className="flex justify-end gap-8">
+          {defaultValues && (
+            <DeleteButton
+              deleteAction={deleteEquipment}
+              deleteId={defaultValues.id as string}
+              name="Equipment"
+            />
+          )}
           <Button type="submit" disabled={isPending}>
             {defaultValues ? "Update Equipment" : "Add Equipment"}
           </Button>

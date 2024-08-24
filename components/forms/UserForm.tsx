@@ -52,7 +52,19 @@ export function UserForm({ defaultValues, onSubmit }: UserFormProps) {
 
   const form = useForm<z.infer<typeof UserFormSchema>>({
     resolver: zodResolver(UserFormSchema),
-    defaultValues,
+    defaultValues: defaultValues
+      ? defaultValues
+      : {
+          id: "",
+          username: "",
+          assignedOffice: "",
+          role: "",
+          firstName: "",
+          middleName: "",
+          lastName: "",
+          email: "",
+          contactNumber: "",
+        },
   });
 
   const handleSubmit = (values: z.infer<typeof UserFormSchema>) => {
@@ -78,7 +90,7 @@ export function UserForm({ defaultValues, onSubmit }: UserFormProps) {
         onSubmit={form.handleSubmit(handleSubmit)}
         className="space-y-3 p-2"
       >
-        <section className="flex gap-20">
+        <section className="flex flex-col gap-20">
           <div className="flex-1 space-y-3">
             <h1 className="font-black text-lg mb-5">Account</h1>
             <FormField
