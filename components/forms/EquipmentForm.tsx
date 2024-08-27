@@ -7,6 +7,7 @@ import { useState, useTransition } from "react";
 import { useToast } from "../ui/use-toast";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import axios from "axios";
 import {
   Form,
   FormControl,
@@ -22,6 +23,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { UploadButton } from "@/lib/uploadthing";
+import Image from "next/image";
+import { Loader2Icon, X } from "lucide-react";
+import DeleteButton from "../DeleteButton";
 import { deleteEquipment } from "@/actions/equipment.action";
 
 export const EquipmentFormSchema = z.object({
@@ -31,6 +36,7 @@ export const EquipmentFormSchema = z.object({
   price: z.string(),
   quantity: z.string(),
   isAvailable: z.string(),
+  imageUrl: z.string().optional(),
 });
 
 interface EquipmentFormProps {
@@ -41,6 +47,10 @@ interface EquipmentFormProps {
 export function EquipmentForm({ defaultValues, onSubmit }: EquipmentFormProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [image, setImage] = useState<string | undefined>(
+    defaultValues?.imageUrl
+  );
+  const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof EquipmentFormSchema>>({
@@ -54,8 +64,29 @@ export function EquipmentForm({ defaultValues, onSubmit }: EquipmentFormProps) {
           price: "",
           quantity: "",
           isAvailable: "",
+          imageUrl: "",
         },
   });
+
+  const handleImageDelete = async (e: any) => {
+    e.preventDefault();
+    setIsDeleting(true);
+    const imageKey = image?.substring(image.lastIndexOf("/") + 1);
+    axios
+      .post("/api/uploadthing/delete", { imageKey })
+      .then((res) => {
+        if (res.data.success) {
+          setImage("");
+          form.setValue("imageUrl", "");
+        }
+      })
+      .catch(() => {
+        alert("error");
+      })
+      .finally(() => {
+        setIsDeleting(false);
+      });
+  };
 
   const handleSubmit = (values: z.infer<typeof EquipmentFormSchema>) => {
     setError(null);
@@ -106,6 +137,60 @@ export function EquipmentForm({ defaultValues, onSubmit }: EquipmentFormProps) {
                   <FormLabel>Item Brand</FormLabel>
                   <FormControl>
                     <Input placeholder="Item Brand" type="text" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Item Image</FormLabel>
+                  <FormControl>
+                    {image ? (
+                      <>
+                        <div className="relative max-w-[400px] min-w-[200px] max-h-[400px] min-h-[200px]">
+                          <Image
+                            src={image}
+                            alt="Item Image"
+                            width={200}
+                            height={200}
+                            className="object-contain"
+                          />
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="absolute right-[-12px] top-0"
+                            onClick={handleImageDelete}
+                          >
+                            {isDeleting ? (
+                              <Loader2Icon className=" animate-spin" />
+                            ) : (
+                              <X />
+                            )}
+                          </Button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex flex-col items-center max-w-[300px] p-10 border-2 border-dashed rounded-md">
+                          <UploadButton
+                            endpoint="imageUploader"
+                            onClientUploadComplete={(res) => {
+                              // Do something with the response
+                              console.log("Files: ", res);
+                              setImage(res[0].url);
+                              form.setValue("imageUrl", res[0].url);
+                            }}
+                            onUploadError={(error: Error) => {
+                              // Do something with the error.
+                            }}
+                          />
+                        </div>
+                      </>
+                    )}
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -164,6 +249,12 @@ export function EquipmentForm({ defaultValues, onSubmit }: EquipmentFormProps) {
           </div>
         </section>
         <section className="flex justify-end gap-8">
+          {defaultValues?.id && (
+            <DeleteButton
+              deleteAction={deleteEquipment}
+              fieldId={defaultValues.id}
+            />
+          )}
           <Button type="submit" disabled={isPending}>
             {defaultValues ? "Update Equipment" : "Add Equipment"}
           </Button>

@@ -3,7 +3,6 @@
 import { EquipmentFormSchema } from "@/components/forms/EquipmentForm";
 import prisma from "@/lib/db";
 import { Prisma } from "@prisma/client";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -18,11 +17,14 @@ export async function getEquipments() {
 
 export async function deleteEquipment(id: string) {
   try {
+    await prisma.borrowEquipment.deleteMany({
+      where: { equipmentId: id },
+    });
     await prisma.equipment.delete({ where: { id } });
-    revalidatePath(`/admin/equipments/${id}`);
   } catch (error) {
-    return null;
+    console.log(error);
   }
+  redirect("/admin/equipments");
 }
 
 export async function getEquipment(id: string) {
@@ -81,6 +83,7 @@ export async function updateEquipment(
         isAvailable: data.isAvailable == "true",
         price: parseInt(data.price),
         quantity: parseInt(data.quantity),
+        imageUrl: data.imageUrl,
       },
     });
   } catch (e) {
@@ -109,6 +112,7 @@ export async function createEquipment(
         isAvailable: data.isAvailable == "true",
         price: parseInt(data.price),
         quantity: parseInt(data.quantity),
+        imageUrl: data.imageUrl,
       },
     });
   } catch (e) {

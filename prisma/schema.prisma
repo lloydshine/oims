@@ -78,7 +78,7 @@ model Equipment {
   quantity        Int
   isAvailable     Boolean           @default(false)
   imageUrl        String?
-  BorrowEquipment BorrowEquipment[]
+  BorrowEquipment BorrowEquipment[] // No `onDelete` here
   dateAdded       DateTime          @default(now())
 }
 
@@ -103,7 +103,7 @@ model BorrowEquipment {
   returned    Boolean   @default(false)
   quantity    Int // Number of equipment items borrowed
   borrow      Borrow    @relation(fields: [borrowId], references: [id])
-  equipment   Equipment @relation(fields: [equipmentId], references: [id])
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade) // `onDelete` here
 
   @@unique([borrowId, equipmentId]) // Ensure a specific equipment is not duplicated in the same borrow
 }

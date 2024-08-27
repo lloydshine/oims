@@ -58,6 +58,7 @@ export function UserForm({ defaultValues, onSubmit }: UserFormProps) {
           id: "",
           username: "",
           assignedOffice: "",
+          password: "",
           role: "",
           firstName: "",
           middleName: "",

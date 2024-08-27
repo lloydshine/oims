@@ -1,4 +1,3 @@
-import { ModeToggle } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { BookmarkIcon } from "lucide-react";
 import Link from "next/link";

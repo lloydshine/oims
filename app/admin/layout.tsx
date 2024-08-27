@@ -23,6 +23,7 @@ export default async function AppLayout({
           {children}
         </ScrollArea>
       </section>
+      <Toaster />
     </main>
   );
 }
