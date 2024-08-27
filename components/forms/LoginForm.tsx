@@ -46,10 +46,13 @@ export function LoginForm() {
   }
 
   return (
-    <div className="h-full p-20 space-y-5 w-[500px]">
-      <h1 className="text-2xl font-bold">Sign in</h1>
+    <div className="h-full md:p-15 p-5 flex flex-col justify-center space-y-5 w-full md:w-[500px] bg-primary md:bg-white">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 bg-white p-5 rounded-lg"
+        >
+          <h1 className="text-2xl font-bold">Sign in</h1>
           <FormField
             control={form.control}
             name="username"

@@ -9,10 +9,9 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { LogoutButton } from "./LogoutButton";
+import { User } from "lucia";
 
-export async function UserButton() {
-  const { user } = await validateRequest();
-
+export async function UserButton({ user }: { user: User }) {
   return (
     <div className="flex gap-4 items-center">
       <DropdownMenu>
@@ -20,7 +19,7 @@ export async function UserButton() {
           <Button variant="ghost" className="relative w-8 h-8 rounded-full">
             <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>{user?.username.charAt(0)}</AvatarFallback>
+              <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
@@ -28,10 +27,10 @@ export async function UserButton() {
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium leading-none">
-                {user?.username}
+                {user.username}
               </p>
               <p className="text-xs leading-none text-muted-foreground">
-                {user?.username}@gmail.com
+                {user.username}@gmail.com
               </p>
             </div>
           </DropdownMenuLabel>
@@ -40,7 +39,6 @@ export async function UserButton() {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <span className="hidden text-md sm:inline-flex">{user?.username}</span>
     </div>
   );
 }

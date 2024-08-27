@@ -1,27 +1,56 @@
 import { adminLinks, appLinks } from "@/lib/globals";
-import { BookmarkIcon } from "lucide-react";
-import { UserButton } from "./UserButton";
 import { Separator } from "../ui/separator";
-import { validateRequest } from "@/lib/auth";
 import { NavLink } from "./NavLink";
 import { ScrollArea } from "../ui/scroll-area";
+import { User } from "lucia";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
+import { Button } from "../ui/button";
+import { ChevronLeftCircle, MenuIcon } from "lucide-react";
 
-export async function Sidebar() {
-  const { user } = await validateRequest();
+export function Sidebar({ user }: { user: User }) {
   return (
-    <ScrollArea className="flex flex-col w-[300px] border-r-2 max-h-screen">
-      <div className="flex items-center gap-4 py-10 px-5">
-        <BookmarkIcon />
-        <h1 className="text-2xl font-bold">IOMS</h1>
-      </div>
+    <ScrollArea className="md:flex flex-col w-[300px] border-r-2 max-h-screen pt-24 hidden">
       <div className="flex flex-col">
         <NavLink links={appLinks} />
       </div>
       <Separator className="my-10" />
-      {user?.role === "ADMIN" ? <NavLink links={adminLinks} /> : null}
-      <div className="p-10">
-        <UserButton />
-      </div>
+      {user.role === "ADMIN" ? <NavLink links={adminLinks} /> : null}
     </ScrollArea>
+  );
+}
+
+export function SideNav({ user }: { user: User }) {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline" size="icon" className="md:hidden">
+          <MenuIcon />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="left" className="p-0 border-0">
+        <SheetHeader className="flex-row p-5 items-center justify-between">
+          <SheetTitle>OIMS</SheetTitle>
+          <SheetClose asChild>
+            <Button size="icon" variant="outline">
+              <ChevronLeftCircle />
+            </Button>
+          </SheetClose>
+        </SheetHeader>
+        <ScrollArea className="flex flex-col w-full max-h-screen">
+          <div className="flex flex-col">
+            <NavLink links={appLinks} />
+          </div>
+          <Separator className="my-10" />
+          {user.role === "ADMIN" ? <NavLink links={adminLinks} /> : null}
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   );
 }

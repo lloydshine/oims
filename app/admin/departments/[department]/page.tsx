@@ -1,7 +1,5 @@
 import { getDepartment, updateDepartment } from "@/actions/department.action";
 import { createProgram, getDepartmentPrograms } from "@/actions/program.action";
-import { DataTable } from "@/components/data-table";
-import { programCol } from "../columns";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { DepartmentForm } from "@/components/forms/DepartmentForm";
@@ -19,7 +17,7 @@ export default async function DepartmentPage({ params }: { params: any }) {
           <Link href="/admin/departments">Back</Link>
         </Button>
         <h1 className="text-3xl font-bold mb-10">{department?.name}</h1>
-        <DataTable columns={programCol} data={programs} />
+        <pre>{JSON.stringify(programs, null, 2)}</pre>
       </section>
       <DepartmentForm
         onSubmit={updateDepartment}

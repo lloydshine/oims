@@ -22,7 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import DeleteButton from "../DeleteButton";
 import { deleteEquipment } from "@/actions/equipment.action";
 
 export const EquipmentFormSchema = z.object({
@@ -165,13 +164,6 @@ export function EquipmentForm({ defaultValues, onSubmit }: EquipmentFormProps) {
           </div>
         </section>
         <section className="flex justify-end gap-8">
-          {defaultValues && (
-            <DeleteButton
-              deleteAction={deleteEquipment}
-              deleteId={defaultValues.id as string}
-              name="Equipment"
-            />
-          )}
           <Button type="submit" disabled={isPending}>
             {defaultValues ? "Update Equipment" : "Add Equipment"}
           </Button>
