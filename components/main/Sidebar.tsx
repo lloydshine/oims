@@ -17,6 +17,9 @@ import { ChevronLeftCircle, MenuIcon } from "lucide-react";
 export function Sidebar({ user }: { user: User }) {
   return (
     <ScrollArea className="md:flex flex-col w-[300px] border-r-2 max-h-screen pt-24 hidden">
+      <div className="p-2 border-2 mx-2 mb-2 rounded-md text-center bg-secondary text-secondary-foreground">
+        <h1 className="font-bold">{user.assignedOffice}</h1>
+      </div>
       <div className="flex flex-col">
         <NavLink links={appLinks} />
       </div>

@@ -38,6 +38,7 @@ model Department {
   shortName String    @unique
   Borrow    Borrow[]
   Program   Program[]
+  Student   Student[]
 }
 
 model Program {
@@ -46,6 +47,7 @@ model Program {
   shortName    String     @unique
   departmentId String
   department   Department @relation(fields: [departmentId], references: [id])
+  Student      Student[]
 }
 
 model User {
@@ -106,4 +108,38 @@ model BorrowEquipment {
   equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade) // `onDelete` here
 
   @@unique([borrowId, equipmentId]) // Ensure a specific equipment is not duplicated in the same borrow
+}
+
+model Student {
+  id             String      @id @default(uuid())
+  studentId      String      @unique
+  firstName      String
+  middleName     String
+  lastName       String
+  contactNumber  String
+  email          String
+  department     Department  @relation(fields: [departmentId], references: [id])
+  departmentId   String
+  program        Program     @relation(fields: [programId], references: [id])
+  programId      String
+  yearLevel      Int
+  classification String
+  Admission      Admission[]
+}
+
+model Admission {
+  id            String          @id @default(uuid())
+  student       Student         @relation(fields: [studentId], references: [id])
+  studentId     String
+  dateAdmitted  DateTime        @default(now())
+  status        Status          @default(Pending)
+  dateApproved  DateTime?
+  AdmissionFile AdmissionFile[]
+}
+
+model AdmissionFile {
+  id          String    @id @default(uuid())
+  imageURL    String
+  admission   Admission @relation(fields: [admissionId], references: [id])
+  admissionId String
 }

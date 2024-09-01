@@ -32,10 +32,10 @@ export function EquipmentCard({
         <h1>{equipment.name}</h1>
         <Badge>{equipment.isAvailable ? "Available" : "Not Available"}</Badge>
       </CardHeader>
-      <CardContent>
+      <CardContent className="h-[300px]">
         <p className="text-muted-foreground">{equipment.brand}</p>
         <Image
-          src="/vercel.svg"
+          src={equipment.imageUrl ? equipment.imageUrl : "/vercel.svg"}
           alt="Photo by Drew Beamer"
           className="rounded-md"
           width={300}

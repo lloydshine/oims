@@ -1,3 +1,5 @@
+import { AdmissionForm } from "@/components/forms/AdmissionForm";
+
 export default function AdmissionTwoPage() {
-  return <div>page</div>;
+  return <AdmissionForm admissionNumber={2} />;
 }

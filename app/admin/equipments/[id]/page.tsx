@@ -13,6 +13,7 @@ export default async function EquipmentPage({ params }: { params: any }) {
         price: equipment.price.toString(),
         quantity: equipment.quantity.toString(),
         isAvailable: equipment.isAvailable ? "true" : "false",
+        imageUrl: equipment.imageUrl ? equipment.imageUrl : undefined,
       }}
       onSubmit={updateEquipment}
     />
