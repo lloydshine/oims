@@ -1,9 +1,10 @@
+import { register } from "@/actions/auth.action";
 import { UserForm } from "@/components/forms/UserForm";
 
 export default function AddUserPage() {
   return (
     <section>
-      <UserForm />
+      <UserForm onSubmit={register} />
     </section>
   );
 }
