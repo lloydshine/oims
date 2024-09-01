@@ -17,7 +17,7 @@ export async function EquipmentList() {
       <h1>Equipments</h1>
       <section className="flex flex-wrap max-h-[400px] h-[400px] gap-2">
         {equipments.map((equipment) => (
-          <Card className="w-[300px] h-[350px]">
+          <Card className="w-[300px] h-[350px]" key={equipment.id}>
             <CardHeader>{equipment.name}</CardHeader>
             <CardContent className="h-[200px]">
               <Image
