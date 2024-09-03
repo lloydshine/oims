@@ -10,9 +10,9 @@ export async function EquipmentStatistics() {
   const requests = await getBorrows();
   return (
     <div className="flex my-10 gap-6 items-center">
-      <Card>
+      <Card className="bg-primary text-white">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 space-x-5">
-          <CardTitle className="text-[11px] font-medium">
+          <CardTitle className="text-md text-primary-foreground/70">
             Total Equipmnents
           </CardTitle>
           <ArrowBigDownDash />
@@ -21,10 +21,10 @@ export async function EquipmentStatistics() {
           <div className="text-2xl font-bold">{equipments.length}</div>
         </CardContent>
       </Card>
-      <Card>
+      <Card className="bg-primary text-white">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 space-x-5">
-          <CardTitle className="text-[11px] font-medium">
-            Recent Borrows
+          <CardTitle className="text-md text-primary-foreground/70">
+            Total Requests
           </CardTitle>
           <HandCoins />
         </CardHeader>

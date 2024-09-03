@@ -25,6 +25,7 @@ enum Status {
   Approved
   Pending
   Declined
+  Completed
 }
 
 enum Office {

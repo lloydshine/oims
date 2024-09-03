@@ -26,6 +26,7 @@ import { Department } from "@prisma/client";
 import { getDepartments } from "@/actions/department.action";
 import EquipmentList from "@/app/request/equipments/EquipmentList";
 import { createBorrow } from "@/actions/borrow.action";
+import { useRouter } from "next/navigation";
 
 export const RequestEquipmentsFormSchema = z.object({
   id: z.string().optional(),
@@ -47,6 +48,7 @@ export default function RequestEquipmentsForm() {
   const [error, setError] = useState<string | null>(null);
   const [departments, setDepartments] = useState<Department[]>([]);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -73,11 +75,16 @@ export default function RequestEquipmentsForm() {
     setError(null);
     startTransition(async () => {
       try {
-        await createBorrow(values);
-        toast({
-          title: "Create Request Equipments",
-          description: "Request Equipments Successfully Created!",
-        });
+        const res = await createBorrow(values);
+        if (res.success) {
+          toast({
+            title: "Create Request Equipments",
+            description: "Request Equipments Successfully Created!",
+          });
+          router.push(`request/equipments/${res.log}`);
+        } else {
+          setError(res.log);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
       }
@@ -131,7 +138,7 @@ export default function RequestEquipmentsForm() {
                 <SelectContent>
                   {departments.map((department) => (
                     <SelectItem value={department.id} key={department.id}>
-                      {department.shortName}
+                      {department.name}
                     </SelectItem>
                   ))}
                 </SelectContent>

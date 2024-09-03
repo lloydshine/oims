@@ -10,7 +10,7 @@ export default function DepartmentsPage() {
         <h1 className="text-2xl font-semibold">Departments</h1>
       </header>
       <br />
-      <Button asChild>
+      <Button>
         <Link href="/admin/departments/add">Add Department</Link>
       </Button>
       <br />

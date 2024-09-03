@@ -2,6 +2,8 @@
 
 import { RequestEquipmentsFormSchema } from "@/components/forms/RequestEquipmentsForm";
 import prisma from "@/lib/db";
+import { Status } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -27,7 +29,7 @@ export async function createBorrow(
   data: z.infer<typeof RequestEquipmentsFormSchema>
 ) {
   try {
-    await prisma.borrow.create({
+    const borrow = await prisma.borrow.create({
       data: {
         borrower: data.borrower,
         event: data.event,
@@ -40,10 +42,30 @@ export async function createBorrow(
         },
       },
     });
+    return {
+      success: true,
+      log: borrow.id,
+    };
   } catch (e) {
     return {
-      error: "An unknown error occurred",
+      success: false,
+      log: "An unknown error occurred",
     };
   }
-  redirect("/");
+}
+
+export async function updateBorrowStatus(borrowId: string, status: Status) {
+  try {
+    await prisma.borrow.update({ where: { id: borrowId }, data: { status } });
+    revalidatePath(`/request/equipments/${borrowId}`);
+    return {
+      success: true,
+      log: "Update Success",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      log: "An unknown error occurred",
+    };
+  }
 }
