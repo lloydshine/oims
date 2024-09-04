@@ -38,7 +38,11 @@ export async function getEquipment(id: string) {
 
 export async function getUnreturnedApprovedEquipmentCount(equipmentId: string) {
   try {
-    const count = await prisma.borrowEquipment.count({
+    // Calculate the sum of quantities for borrowed items that are approved and not yet returned
+    const result = await prisma.borrowEquipment.aggregate({
+      _sum: {
+        quantity: true, // Aggregate the sum of quantities
+      },
       where: {
         equipmentId,
         returned: false, // Filter for items that haven't been returned
@@ -47,10 +51,11 @@ export async function getUnreturnedApprovedEquipmentCount(equipmentId: string) {
         },
       },
     });
-    return count;
+
+    return result._sum.quantity || 0; // Return the summed quantity or 0 if none
   } catch (error) {
     console.error(
-      "Error fetching count of unreturned approved equipments:",
+      "Error fetching sum of unreturned approved equipment quantities:",
       error
     );
     return 0;

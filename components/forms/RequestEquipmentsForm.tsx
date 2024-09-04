@@ -81,7 +81,7 @@ export default function RequestEquipmentsForm() {
             title: "Create Request Equipments",
             description: "Request Equipments Successfully Created!",
           });
-          router.push(`request/equipments/${res.log}`);
+          router.push(`/request/equipments/${res.log}`);
         } else {
           setError(res.log);
         }

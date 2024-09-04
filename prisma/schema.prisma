@@ -1,19 +1,12 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// prisma/schema.prisma
 
 generator client {
   provider = "prisma-client-js"
 }
 
-// prisma/schema.prisma
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  // uncomment next line if you use Prisma <5.10
-  // directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 enum UserRole {
@@ -47,7 +40,7 @@ model Program {
   name         String     @unique
   shortName    String     @unique
   departmentId String
-  department   Department @relation(fields: [departmentId], references: [id])
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   Student      Student[]
 }
 
@@ -81,14 +74,14 @@ model Equipment {
   quantity        Int
   isAvailable     Boolean           @default(false)
   imageUrl        String?
-  BorrowEquipment BorrowEquipment[] // No `onDelete` here
+  BorrowEquipment BorrowEquipment[]
   dateAdded       DateTime          @default(now())
 }
 
 model Borrow {
   id               String            @id @default(uuid())
   borrower         String
-  department       Department        @relation(fields: [departmentId], references: [id])
+  department       Department        @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   event            String
   dateRequested    DateTime          @default(now())
   dateReturned     DateTime?
@@ -104,11 +97,11 @@ model BorrowEquipment {
   borrowId    String
   equipmentId String
   returned    Boolean   @default(false)
-  quantity    Int // Number of equipment items borrowed
-  borrow      Borrow    @relation(fields: [borrowId], references: [id])
-  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade) // `onDelete` here
+  quantity    Int
+  borrow      Borrow    @relation(fields: [borrowId], references: [id], onDelete: Cascade)
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
 
-  @@unique([borrowId, equipmentId]) // Ensure a specific equipment is not duplicated in the same borrow
+  @@unique([borrowId, equipmentId])
 }
 
 model Student {
@@ -119,9 +112,9 @@ model Student {
   lastName       String
   contactNumber  String
   email          String
-  department     Department  @relation(fields: [departmentId], references: [id])
+  department     Department  @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   departmentId   String
-  program        Program     @relation(fields: [programId], references: [id])
+  program        Program     @relation(fields: [programId], references: [id], onDelete: Cascade)
   programId      String
   yearLevel      Int
   classification String
@@ -130,7 +123,7 @@ model Student {
 
 model Admission {
   id            String          @id @default(uuid())
-  student       Student         @relation(fields: [studentId], references: [id])
+  student       Student         @relation(fields: [studentId], references: [id], onDelete: Cascade)
   studentId     String
   dateAdmitted  DateTime        @default(now())
   status        Status          @default(Pending)
@@ -141,6 +134,6 @@ model Admission {
 model AdmissionFile {
   id          String    @id @default(uuid())
   imageURL    String
-  admission   Admission @relation(fields: [admissionId], references: [id])
+  admission   Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
   admissionId String
 }

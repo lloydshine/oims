@@ -1,7 +1,7 @@
 export function AvailabilityBadge({ isAvailable }: { isAvailable: boolean }) {
   return (
     <div
-      className={`px-2 py-1 text-white rounded-full ${
+      className={`px-2 py-1 text-white rounded-full w-fit ${
         isAvailable ? "bg-green-600" : "bg-orange-600"
       }`}
     >

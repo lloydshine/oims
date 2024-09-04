@@ -1,3 +1,5 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +12,7 @@ import Image from "next/image";
 import { Equipment } from "@prisma/client";
 import { getUnreturnedApprovedEquipmentCount } from "@/actions/equipment.action";
 import { useEffect, useState } from "react";
+import { AvailabilityBadge } from "@/components/main/AvailabilityBadge";
 
 export function EquipmentCard({
   equipment,
@@ -19,6 +22,8 @@ export function EquipmentCard({
   addItem: (id: any, e: any) => void;
 }) {
   const [borrowedCount, setBorrowedCount] = useState(0);
+  const [borrow, setBorrow] = useState(0);
+
   useEffect(() => {
     const fetch = async () => {
       const count = await getUnreturnedApprovedEquipmentCount(equipment.id);
@@ -26,31 +31,39 @@ export function EquipmentCard({
     };
     fetch();
   }, []);
+
+  const handleClick = (e: any) => {
+    addItem(equipment.id, e);
+    setBorrow(borrow + 1);
+  };
+
   return (
-    <Card className="w-[300px]">
-      <CardHeader className="flex-row items-center justify-between">
-        <h1>{equipment.name}</h1>
-        <Badge>{equipment.isAvailable ? "Available" : "Not Available"}</Badge>
-      </CardHeader>
-      <CardContent className="h-[300px]">
-        <p className="text-muted-foreground">{equipment.brand}</p>
-        <Image
-          src={equipment.imageUrl ? equipment.imageUrl : "/vercel.svg"}
-          alt="Photo by Drew Beamer"
-          className="rounded-md"
-          width={300}
-          height={300}
-        />
+    <Card className="w-[300px] h-min rounded-xl">
+      <CardContent
+        className="h-[300px] flex flex-col justify-between py-2"
+        style={{
+          background: `linear-gradient(rgba(0, 0, 0, 0.289), rgba(0, 0, 0, 0.873)), url('${equipment.imageUrl}') no-repeat center center / cover`,
+        }}
+      >
+        <AvailabilityBadge isAvailable={equipment.isAvailable} />
+        <div className="text-white flex justify-between items-center w-full">
+          <div>
+            <h1 className="font-semibold">{equipment.name}</h1>
+            <p className="text-white/50">{equipment.brand}</p>
+            <p className="text-white/50">
+              Available : {equipment.quantity - borrowedCount}
+            </p>
+          </div>
+          <div>
+            <Button
+              disabled={equipment.quantity - borrowedCount == borrow}
+              onClick={handleClick}
+            >
+              Add
+            </Button>
+          </div>
+        </div>
       </CardContent>
-      <CardFooter className="justify-between">
-        <Button
-          disabled={equipment.quantity == borrowedCount}
-          onClick={(e) => addItem(equipment.id, e)}
-        >
-          Add
-        </Button>
-        <p>Available : {equipment.quantity - borrowedCount}</p>
-      </CardFooter>
     </Card>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
 import { getStatusButtonAttributes } from "@/lib/utils";
 import { Status } from "@prisma/client";
 
@@ -51,7 +52,10 @@ export function StatusButton({
   const handleClick = async () => {
     const result = await updateAction(id, status);
     if (result.success) {
-      console.log(`Status updated to: ${status}`);
+      toast({
+        title: "Log",
+        description: `Status updated to: ${status}`,
+      });
     } else {
       console.error(result.log);
     }

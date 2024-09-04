@@ -1,7 +1,6 @@
 import { Sidebar } from "@/components/main/Sidebar";
 import { Topbar } from "@/components/main/Topbar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Toaster } from "@/components/ui/toaster";
 import { validateRequest } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
@@ -23,7 +22,6 @@ export default async function AppLayout({
           {children}
         </ScrollArea>
       </section>
-      <Toaster />
     </main>
   );
 }
